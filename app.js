@@ -6,16 +6,14 @@ const Employee = require("./lib/Employee");
 var fs = require("fs");
 let employees = [];
 
-getUserInfo();
+getQuestions();
 
+async function getQuestions() {
 
-async function getUserInfo() {
-
- 
     const { position } = await inquirer.prompt([
         {
             type: "list",
-            message: "Choose the position that you want to create the info card for!",
+            message: "What kind of employee do you want to add?",
             name: "position",
             choices: [
                 "Manager",
@@ -27,6 +25,7 @@ async function getUserInfo() {
     ])
 
     async function getEngineerInfo() {
+
         const { name, id, email, github } = await inquirer.prompt([
             {
                 message: "What's your name?",
@@ -48,9 +47,11 @@ async function getUserInfo() {
         let engineer = new Engineer(name, id, email, github);
         employees.push(engineer);
 
-        getUserInfo();
+        getQuestions();
     }
+
     async function getInternInfo() {
+
         const { name, id, email, school } = await inquirer.prompt([
             {
                 message: "What's your name?",
@@ -63,7 +64,7 @@ async function getUserInfo() {
             {
                 message: "What's your email?",
                 name: "email"
-            },
+            }, 
             {
                 message: "What's your school",
                 name: "school"
@@ -72,9 +73,11 @@ async function getUserInfo() {
         let intern = new Intern(name, id, email, school);
         employees.push(intern);
 
-        getUserInfo();
+        getQuestions();
     }
+
     async function getManagerInfo() {
+
         const { name, id, email, officeNumber } = await inquirer.prompt([
             {
                 message: "What's your name?",
@@ -96,7 +99,7 @@ async function getUserInfo() {
         let manager = new Manager(name, id, email, officeNumber);
         employees.push(manager);
 
-        getUserInfo();
+        getQuestions();
     }
 
     switch (position) {
@@ -117,13 +120,9 @@ async function getUserInfo() {
                 if (err) {
                     return console.log(err);
                 }
-
-                console.log("You did it!");
-
             });
             break;
     }
-
 }
 
 let html = function (data) {
@@ -159,34 +158,35 @@ let html = function (data) {
     </div>
     <ul class="ul">
         
-    ${getContent(data)}
+    ${makeCards(data)}
         
     </ul>
 </body>
 </html>
 `
 }
-function getContent(data) {
+
+function makeCards(data) {
 
     return data.map(x => {
         let position = x.getRole();
-        console.log(position);
+
         switch (position) {
             case "Manager":
-                return getManagerCard(x);
+                return makeManagerCard(x);
                 break;
             case "Engineer":
-                return getEngineerCard(x);
+                return makeEngineerCard(x);
                 break;
             case "Intern":
-                return getInternCard(x);
+                return makeInternCard(x);
                 break;
         }
 
     }).join('\n')
 }
 
-function getManagerCard(x) {
+function makeManagerCard(x) {
 
     let mangerCard =
         `
@@ -217,7 +217,7 @@ function getManagerCard(x) {
 
     return mangerCard
 }
-function getEngineerCard(x) {
+function makeEngineerCard(x) {
     let engineerCard =
         `
         <li>
@@ -246,7 +246,7 @@ function getEngineerCard(x) {
     `
     return engineerCard
 }
-function getInternCard(x) {
+function makeInternCard(x) {
     let internCard =
         `
     <li>
@@ -272,9 +272,6 @@ function getInternCard(x) {
 				</div>
               </div>
               </li>
-
     `
     return internCard
 }
-
-
